@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 
 const Tamaño_Estrella = 24;
 const Tamaño_Estrella_Morada = 32;
-const Duracion_Estrella = 8000;
-const Maximo_Estrellas_Amarillas = 3;
+const Duracion_Estrella = 8000; // 8 segundos 
+const Maximo_Estrellas_Amarillas = 3; 
 
 type Estrella = {
   id: number;
@@ -12,35 +12,41 @@ type Estrella = {
   tipo: "amarilla" | "morada";
 };
 
+
 type Props = {
   stars: Estrella[];
-  setStars: React.Dispatch<React.SetStateAction<Estrella[]>>;
-  gameOver: boolean;
+  setStars: React.Dispatch<React.SetStateAction<Estrella[]>>; // Función para actualizar las estrellas
+  gameOver: boolean; // Estado del juego 
 };
 
-let idGlobal = 0;
+let idGlobal = 0; // ID único para cada estrella
 
 const Estrellas = ({ stars, setStars, gameOver }: Props) => {
-  const estrellasRef = useRef<Estrella[]>([]);
-  const totalAmarillasRef = useRef(0);
-  const ultimoMorado = useRef(0);
+  
+  const estrellasRef = useRef<Estrella[]>([]);         // Copia en tiempo real de las estrellas activas
+  const totalAmarillasRef = useRef(0);                 
+  const ultimoMorado = useRef(0);                      
 
-  // Mantener ref sincronizada con el estado stars
+  // Sincroniza el ref interno con el estado real de las estrellas
   useEffect(() => {
     estrellasRef.current = stars;
   }, [stars]);
 
+  
   useEffect(() => {
-    if (gameOver) return; // Si el juego terminó, no generar más estrellas
+    if (gameOver) return; 
 
+    //  genera estrellas amarillas cada 2 segundos
     const intervaloAmarillas = setInterval(() => {
       const cantidadActualAmarillas = estrellasRef.current.filter((e) => e.tipo === "amarilla").length;
+
+      // Solo genera nueva estrella si hay menos del máximo permitido
       if (cantidadActualAmarillas >= Maximo_Estrellas_Amarillas) return;
 
+      // Crea una nueva estrella amarilla en una posición aleatoria
       const id = idGlobal++;
       const x = Math.random() * (window.innerWidth - Tamaño_Estrella);
       const y = Math.random() * (window.innerHeight - Tamaño_Estrella);
-
       const nuevaEstrella: Estrella = { id, x, y, tipo: "amarilla" };
 
       setStars((prev) => {
@@ -49,16 +55,18 @@ const Estrellas = ({ stars, setStars, gameOver }: Props) => {
         return actualizadas;
       });
 
-      totalAmarillasRef.current += 1;
+      totalAmarillasRef.current += 1; // Acumula cuántas amarillas han aparecido desde el inicio
 
+      
       if (
         totalAmarillasRef.current % 15 === 0 &&
-        totalAmarillasRef.current !== ultimoMorado.current
+        totalAmarillasRef.current !== ultimoMorado.current // Evita repetir en el mismo múltiplo
       ) {
         ultimoMorado.current = totalAmarillasRef.current;
-        crearEstrellaMorada();
+        crearEstrellaMorada(); 
       }
 
+     
       setTimeout(() => {
         setStars((prev) => {
           const filtradas = prev.filter((estrella) => estrella.id !== id);
@@ -66,11 +74,12 @@ const Estrellas = ({ stars, setStars, gameOver }: Props) => {
           return filtradas;
         });
       }, Duracion_Estrella);
-    }, 2000);
+    }, 2000); 
 
     return () => clearInterval(intervaloAmarillas);
   }, [gameOver, setStars]);
 
+  // Función auxiliar para crear una estrella morada
   const crearEstrellaMorada = () => {
     const id = idGlobal++;
     const x = Math.random() * (window.innerWidth - Tamaño_Estrella_Morada);
@@ -84,6 +93,7 @@ const Estrellas = ({ stars, setStars, gameOver }: Props) => {
       return actualizadas;
     });
 
+    // También se elimina tras cierto tiempo
     setTimeout(() => {
       setStars((prev) => {
         const filtradas = prev.filter((estrella) => estrella.id !== id);
@@ -93,6 +103,7 @@ const Estrellas = ({ stars, setStars, gameOver }: Props) => {
     }, Duracion_Estrella);
   };
 
+  // Renderiza todas las estrellas activas
   return (
     <>
       {stars.map((estrella) => (

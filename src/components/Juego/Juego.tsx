@@ -10,29 +10,34 @@ import { enviarNotificacionPush } from "../../service/notification";
 
 const Juego = () => {
   const history = useHistory();
+
+  // `retoId` viene como parámetro desde otra vista (si se trata de un reto)
   const location = useLocation<{ retoId?: string }>();
   const retoId = location.state?.retoId ?? null;
 
-  const { user } = useAuth();
+  const { user } = useAuth(); 
 
   const BALL_SIZE = 40;
   const STAR_SIZE_AMARILLA = 30;
   const STAR_SIZE_MORADA = 40;
-  const INITIAL_TIME = 60;
+  const INITIAL_TIME = 60; 
 
+  // Estado de la posición de la bola
   const [position, setPosition] = useState({
     x: window.innerWidth / 2 - BALL_SIZE / 2,
     y: window.innerHeight / 2 - BALL_SIZE / 2,
   });
 
+  // Estado de las estrellas en pantalla
   const [stars, setStars] = useState<
     { id: number; x: number; y: number; tipo: "amarilla" | "morada" }[]
   >([]);
 
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
-  const [gameOver, setGameOver] = useState(false);
+  const [score, setScore] = useState(0);         // Puntaje actual
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME); 
+  const [gameOver, setGameOver] = useState(false);        
 
+  // Función para reiniciar el estado del juego
   const resetGame = () => {
     setPosition({
       x: window.innerWidth / 2 - BALL_SIZE / 2,
@@ -44,25 +49,28 @@ const Juego = () => {
     setGameOver(false);
   };
 
+  // Cuando se recoge una estrella
   const handleStarCollected = (id: number, puntos: number) => {
-    setStars((prevStars) => prevStars.filter((s) => s.id !== id));
-    setScore((prev) => prev + puntos);
+    setStars((prevStars) => prevStars.filter((s) => s.id !== id)); // Eliminar estrella
+    setScore((prev) => prev + puntos); // Sumar puntos
   };
 
+  // Lógica para finalizar el juego (ya sea por tiempo o por salir)
   const finalizarJuego = async () => {
     if (!user) return;
 
-    // Si se jugó como reto, actualiza Firestore
+    // Si se jugó un reto, se actualiza en Firestore
     if (retoId) {
       try {
         const db = getFirestore();
         const retoRef = doc(db, "retos", retoId);
+
         await updateDoc(retoRef, {
-          puntajeReceptor: score,
+          puntajeReceptor: score, // Guarda el puntaje obtenido
           estado: "finalizado",
         });
 
-        // Notificar al emisor
+        // Notificar al emisor del reto que se jugó
         const retoDoc = await getDoc(retoRef);
         const emisorUid = retoDoc.data()?.emisorUid;
 
@@ -87,7 +95,7 @@ const Juego = () => {
       }
     }
 
-    resetGame();
+    resetGame(); 
     history.push("/historial-retos"); 
   };
 
@@ -95,19 +103,20 @@ const Juego = () => {
     finalizarJuego();
   };
 
+  // Efecto inicial: arranca el temporizador del juego
   useEffect(() => {
-    resetGame();
+    resetGame(); // Reinicia estado al entrar
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
-          setGameOver(true);
+          clearInterval(timer); 
+          setGameOver(true);    
           return 0;
         }
         return prev - 1;
       });
-    }, 1000);
+    }, 1000); 
 
     return () => {
       clearInterval(timer);
@@ -118,6 +127,7 @@ const Juego = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
+        {/* HUD de tiempo y puntaje */}
         <div
           style={{
             position: "absolute",
@@ -131,6 +141,7 @@ const Juego = () => {
           ⏱ {timeLeft}s | ⭐ {score}
         </div>
 
+        {/* Pantalla final cuando termina el juego */}
         {gameOver && (
           <div
             style={{
@@ -160,12 +171,17 @@ const Juego = () => {
           </div>
         )}
 
+        {/* Estrellas en pantalla */}
         <Estrellas stars={stars} setStars={setStars} gameOver={gameOver} />
+
+        {/* Bola controlada por acelerómetro */}
         <Acelerometro
           position={position}
           setPosition={setPosition}
           ballSize={BALL_SIZE}
         />
+
+        {/* Lógica de colisión y puntuación */}
         <GameLogic
           ballPosition={position}
           stars={stars}
