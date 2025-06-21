@@ -1,0 +1,103 @@
+/* Fondo con imagen */
+.EnviarReto {
+  --background: url('../../assets/images/background.jpg') no-repeat center center / cover;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+}
+
+/* Tarjeta principal */
+.enviar-reto-card {
+  background-color: rgba(242, 183, 87, 0.486);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-width: 500px;
+  margin: 20px auto;
+  width: 100%;
+}
+
+/* Encabezado de la tarjeta */
+.enviar-reto-card ion-card-header {
+  padding-bottom: 0;
+}
+
+.enviar-reto-card ion-card-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.enviar-reto-card ion-card-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+}
+
+/* Contenido de la tarjeta */
+.enviar-reto-card ion-card-content {
+  padding-top: 0;
+}
+
+/* Item del select */
+.select-item {
+  --background: rgba(199, 168, 85, 0.4);
+  --border-radius: 10px;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Texto de puntaje */
+.puntaje-text {
+  text-align: center;
+  margin: 2rem 0;
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Contenedor de botones */
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Botón enviar */
+.enviar-button {
+  --background: rgba(52, 152, 219, 0.8);
+  --background-hover: rgba(41, 128, 185, 0.9);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Botón de regreso */
+.back-button {
+  --color: white;
+  --border-color: white;
+  --background-hover: rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Spinner de carga */
+ion-spinner {
+  color: white;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 480px) {
+  .enviar-reto-card {
+    margin: 10px;
+  }
+  
+  .select-item {
+    --padding-start: 0.8rem;
+    --padding-end: 0.8rem;
+  }
+}

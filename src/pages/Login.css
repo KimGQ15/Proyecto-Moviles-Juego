@@ -1,0 +1,98 @@
+/* Fondo con imagen y centrado perfecto */
+.login-page {
+  --background: url('../../assets/images/background.jpg') no-repeat center center / cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Contenedor principal con efecto vidrio */
+.login-service-container {
+  background-color: rgba(242, 183, 87, 0.486);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  margin: 0 auto;
+}
+
+/* Título centrado */
+.login-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+/* Estilo para el texto SERIO */
+.serie-text {
+  text-align: center;
+  color: #007bff;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+/* Contenedor de botones */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* Botones con mismo tamaño y estilo */
+.login-button {
+  --border-radius: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-weight: 600;
+  height: 50px;
+  margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-button.primary {
+  --background: linear-gradient(135deg, #007bff, #0062cc);
+  --box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.login-button.secondary {
+  --background: rgba(255, 255, 255, 0.9);
+  --color: #007bff;
+  --border-color: #007bff;
+  --border-width: 2px;
+  --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Efectos hover */
+.login-button.primary:hover {
+  --box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+}
+
+.login-button.secondary:hover {
+  --background: rgba(0, 123, 255, 0.05);
+}
+
+/* Responsive para móviles */
+@media (max-width: 480px) {
+  .login-service-container {
+    padding: 25px;
+  }
+  
+  .login-title {
+    font-size: 1.5rem;
+  }
+  
+  .serie-text {
+    font-size: 1rem;
+  }
+}

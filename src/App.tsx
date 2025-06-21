@@ -21,6 +21,7 @@ import Login from "./pages/Login";
 import EnviarReto from "./components/Retos/EnviarReto";
 import RetosRecibidos from "./components/Retos/RetosRecibidos";
 import HistorialRetos from "./components/Retos/HistorialRetos";
+import PuntuajeGlobal from "./components/MarcadorGlobal/PuntuajeGlobal";
 
 setupIonicReact();
 
@@ -37,6 +38,7 @@ const App: React.FC = () => (
         <Route exact path="/enviar-reto" component={EnviarReto} />
         <Route exact path="/retos-recibidos" component={RetosRecibidos} />
         <Route exact path="/historial-retos" component={HistorialRetos} />
+        <Route exact path="/puntuaje-global" component={PuntuajeGlobal} />
         <Route exact path="/login">
           <Login />
         </Route>

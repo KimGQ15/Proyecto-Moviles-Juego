@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   IonPage,
   IonContent,
   IonButton,
+  IonModal,
+  IonInput,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonText,
   IonAlert,
 } from "@ionic/react";
+
 import { useHistory, useLocation } from "react-router-dom";
 import Acelerometro from "./Acelerometro";
 import Estrellas from "./Estrellas";
@@ -12,6 +20,7 @@ import GameLogic from "./Logica";
 import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
 import { useAuth } from "../../context/AuthContext";
 import { enviarNotificacionPush } from "../../service/notification";
+import { registrarPuntajeGlobal } from "../../service/RegistrarPuntajeService";
 
 const Juego = () => {
   const history = useHistory();
@@ -25,7 +34,7 @@ const Juego = () => {
   const BALL_SIZE = 40;
   const STAR_SIZE_AMARILLA = 30;
   const STAR_SIZE_MORADA = 40;
-  const INITIAL_TIME = 60; 
+  const INITIAL_TIME = 10;
 
   // Estado de la posición de la bola
   const [position, setPosition] = useState({
@@ -38,10 +47,62 @@ const Juego = () => {
     { id: number; x: number; y: number; tipo: "amarilla" | "morada" }[]
   >([]);
 
-  const [score, setScore] = useState(0);         // Puntaje actual
-  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME); 
-  const [gameOver, setGameOver] = useState(false);        
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
+  const [gameOver, setGameOver] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [showRegistroModal, setShowRegistroModal] = useState(false);
+  const [nombreRegistro, setNombreRegistro] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const scoreRef = useRef(0);
+
+  const startGame = () => {
+    // Limpiar cualquier timer previo
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    // Reiniciar estados
+    setGameOver(false);
+    setScore(0);
+    setTimeLeft(INITIAL_TIME);
+    setStars([]);
+    setPosition({
+      x: window.innerWidth / 2 - BALL_SIZE / 2,
+      y: window.innerHeight / 2 - BALL_SIZE / 2,
+    });
+
+    // Iniciar nuevo temporizador
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          setGameOver(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleRegistroPuntaje = async () => {
+    if (!user || !nombreRegistro.trim()) {
+      setShowRegistroModal(false);
+      return;
+    }
+
+    try {
+      await registrarPuntajeGlobal({
+        uid: user.uid,
+        puntaje: score,
+        nombre: nombreRegistro.trim(),
+      });
+    } catch (error) {
+      console.error("Error al registrar puntaje:", error);
+    }
+
+    setShowRegistroModal(false);
+  };
 
   // Función para reiniciar el estado del juego
   const resetGame = () => {
@@ -86,7 +147,9 @@ const Juego = () => {
             await enviarNotificacionPush({
               token,
               title: "¡Reto aceptado!",
-              body: `${user.displayName || "Tu amigo"} jugó y obtuvo ${score} puntos.`,
+              body: `${
+                user.displayName || "Tu amigo"
+              } jugó y obtuvo ${score} puntos.`,
               data: {
                 tipo: "resultadoReto",
                 retoId,
@@ -100,27 +163,26 @@ const Juego = () => {
     }
 
     resetGame();
-    history.push("/historial-retos");
+  };
+
+  const handleGoHome = () => {
+    finalizarJuego();
   };
 
   // Efecto inicial: arranca el temporizador del juego
   useEffect(() => {
-    resetGame(); // Reinicia estado al entrar
+    startGame();
+  }, []);
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer); 
-          setGameOver(true);    
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000); 
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
 
+  useEffect(() => {
     return () => {
-      clearInterval(timer);
-      resetGame();
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
   }, []);
 
@@ -167,7 +229,23 @@ const Juego = () => {
               Tu puntaje: {score}
             </h2>
 
+            <IonButton onClick={startGame}>Volver a jugar</IonButton>
+            <IonButton onClick={() => setShowRegistroModal(true)}>
+              Registrar puntaje
+            </IonButton>
+            <IonButton
+              onClick={() => {
+                history.push({
+                  pathname: "/enviar-reto",
+                  state: { puntaje: score },
+                });
+              }}
+            >
+              Retar Amigos
+            </IonButton>
+
             <IonButton onClick={() => setShowAlert(true)}>Opciones</IonButton>
+            <IonButton onClick={handleGoHome}>Salir</IonButton>
           </div>
         )}
 
@@ -184,14 +262,15 @@ const Juego = () => {
             {
               text: "Ver historial",
               handler: () => {
-                finalizarJuego(); 
+                finalizarJuego();
+                history.push("/historial-retos");
               },
             },
             {
               text: "Salir del juego",
               handler: () => {
                 resetGame();
-                history.push("/"); 
+                history.push("/");
               },
             },
           ]}
@@ -215,6 +294,73 @@ const Juego = () => {
           starSizeAmarilla={STAR_SIZE_AMARILLA}
           starSizeMorada={STAR_SIZE_MORADA}
         />
+
+        <IonModal isOpen={showRegistroModal} backdropDismiss={false}>
+          <IonContent className="main-screen">
+            <div className="button-container" style={{ padding: "20px" }}>
+              <h1
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  marginBottom: "30px",
+                  fontSize: "1.5rem",
+                }}
+              >
+                Registrar Puntaje Global
+              </h1>
+
+              <div
+                style={{
+                  width: "100%",
+                  marginBottom: "30px",
+                  background: "rgba(124, 73, 122, 0.7)",
+                  borderRadius: "30px",
+                  padding: "15px 20px",
+                }}
+              >
+                <IonInput
+                  placeholder="Ingresa tu nombre"
+                  value={nombreRegistro}
+                  onIonInput={(e) =>
+                    setNombreRegistro(e.detail.value as string)
+                  }
+                  style={{
+                    "--color": "white",
+                    "--placeholder-color": "rgba(255, 255, 255, 0.7)",
+                    "--padding-start": "10px",
+                    width: "100%",
+                  }}
+                ></IonInput>
+              </div>
+
+              <button
+                className="main-button"
+                onClick={handleRegistroPuntaje}
+                disabled={!nombreRegistro.trim()}
+                style={{
+                  width: "100%",
+                  opacity: !nombreRegistro.trim() ? 0.7 : 1,
+                  color: "black",
+                }}
+              >
+                Registrar
+              </button>
+
+              <button
+                className="main-button"
+                onClick={() => setShowRegistroModal(false)}
+                style={{
+                  width: "100%",
+                  background: "transparent",
+                  border: "2px solid rgb(124, 73, 122)",
+                  color: "white",
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </IonContent>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

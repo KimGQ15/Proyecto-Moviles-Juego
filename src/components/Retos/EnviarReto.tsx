@@ -7,14 +7,19 @@ import {
   IonSelect,
   IonSelectOption,
   IonItem,
-  IonLabel,
   IonSpinner,
+  IonText,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent
 } from "@ionic/react";
 import { crearReto } from "../../service/retoService";
 import { useAuth } from "../../context/AuthContext";
 import { getFirestore, collection, getDocs, getDoc, doc } from "firebase/firestore";
 import { enviarNotificacionPush } from "../../service/notification";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 interface Usuario {
   uid: string;
@@ -24,6 +29,7 @@ interface Usuario {
 const EnviarReto: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation<{ puntaje: number }>();
+  const history = useHistory();
   const puntajeActual = location.state?.puntaje ?? 0;
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -102,45 +108,64 @@ const EnviarReto: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage className="EnviarReto">
       <IonContent className="ion-padding">
-        <h2>Enviar reto</h2>
+        <IonCard className="enviar-reto-card">
+          <IonCardHeader>
+            <IonCardTitle style={{ textAlign: 'center' }}>Selecciona un amigo</IonCardTitle>
+            <IonCardSubtitle style={{ textAlign: 'center' }}>Elige a quien retar</IonCardSubtitle>
+          </IonCardHeader>
 
-        {loading ? (
-          <IonSpinner name="crescent" />
-        ) : (
-          <>
-            <IonItem>
-              <IonLabel>Selecciona un amigo</IonLabel>
-              <IonSelect
-                placeholder="Selecciona"
-                value={receptorUid}
-                onIonChange={(e) => setReceptorUid(e.detail.value)}
-              >
-                {usuarios.map((u) => (
-                  <IonSelectOption key={u.uid} value={u.uid}>
-                    {u.correo || u.uid}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
+          <IonCardContent>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>
+                <IonSpinner name="crescent" />
+              </div>
+            ) : (
+              <>
+                <IonItem className="select-item">
+                  <IonSelect
+                    placeholder="Selecciona un amigo"
+                    value={receptorUid}
+                    onIonChange={(e) => setReceptorUid(e.detail.value)}
+                  >
+                    {usuarios.map((u) => (
+                      <IonSelectOption key={u.uid} value={u.uid}>
+                        {u.correo || u.uid}
+                      </IonSelectOption>
+                    ))}
+                  </IonSelect>
+                </IonItem>
 
-            {receptorUid && (
-              <p>
-                Correo seleccionado:{" "}
-                {usuarios.find((u) => u.uid === receptorUid)?.correo || "No disponible"}
-              </p>
+                <IonText>
+                  <p className="puntaje-text">
+                    Puntaje del reto: <strong>{puntajeActual}</strong>
+                  </p>
+                </IonText>
+
+                <div className="buttons-container">
+                  <IonButton 
+                    expand="block" 
+                    onClick={handleEnviarReto} 
+                    disabled={!receptorUid}
+                    className="enviar-button"
+                  >
+                    ENVIAR RETO
+                  </IonButton>
+                  
+                  <IonButton 
+                    expand="block" 
+                    onClick={() => history.goBack()}
+                    fill="outline"
+                    className="back-button"
+                  >
+                    REGRESAR
+                  </IonButton>
+                </div>
+              </>
             )}
-          </>
-        )}
-
-        <p>
-          Puntaje actual: <strong>{puntajeActual}</strong>
-        </p>
-
-        <IonButton expand="block" onClick={handleEnviarReto} disabled={!receptorUid}>
-          Enviar Reto
-        </IonButton>
+          </IonCardContent>
+        </IonCard>
 
         <IonToast
           isOpen={showToast}

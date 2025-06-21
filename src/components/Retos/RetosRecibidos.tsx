@@ -14,6 +14,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { enviarNotificacionPush } from "../../service/notification";
 import { useHistory } from "react-router-dom";
+import "./RetosRecibidos.css"; // Asegúrate de tener un archivo CSS para estilos personalizados
 const RetosRecibidos: React.FC = () => {
   const { user } = useAuth();
   const [retos, setRetos] = useState<any[]>([]);
@@ -52,6 +53,10 @@ const handleAceptar = async (retoId: string) => {
   history.push("/jugar", { retoId }); 
 }
 
+const handleVolver = () => {
+    history.push("/");
+  }
+
   return (
     <IonPage>
       <IonContent className="ion-padding">
@@ -78,6 +83,16 @@ const handleAceptar = async (retoId: string) => {
             )}
           </IonList>
         )}
+
+        <IonButton 
+            expand="block" 
+            onClick={handleVolver}
+            className="back-button"
+            fill="outline"
+          >
+            Volver al Home
+          </IonButton>
+        
 
         <IonToast
           isOpen={!!toastMsg}

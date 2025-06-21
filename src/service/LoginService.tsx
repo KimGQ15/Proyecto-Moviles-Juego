@@ -111,6 +111,7 @@ const LoginService: React.FC = () => {
           <IonInput
             type="email"
             value={email}
+            className="input-email"
             onIonChange={(e) => setEmail(e.detail.value ?? "")}
             required
           />
@@ -120,6 +121,7 @@ const LoginService: React.FC = () => {
           <IonInput
             type="password"
             value={password}
+            className="input-password"
             onIonChange={(e) => setPassword(e.detail.value ?? "")}
             required
           />
@@ -139,7 +141,7 @@ const LoginService: React.FC = () => {
         color="primary"
         onClick={handleRegister}
         disabled={!email || !password}
-        className="main-button"
+        className="secondary-button"
         style={{ marginTop: "1rem" }}
       >
         Registrar

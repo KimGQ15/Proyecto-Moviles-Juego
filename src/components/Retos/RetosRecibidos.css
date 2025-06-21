@@ -1,0 +1,142 @@
+/* Fondo con imagen igual al Home */
+ion-content {
+  --background: url('../../assets/images/background.jpg') no-repeat center center / cover;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Contenedor principal con efecto vidrio */
+.retos-container {
+  background-color: rgba(242, 183, 87, 0.486);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(221, 212, 212, 0.3);
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+/* Estilo para el título */
+h2 {
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 600;
+  font-size: 24px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Lista de retos con efecto vidrio */
+ion-list {
+  background: transparent;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+ion-item {
+  --background: rgba(199, 168, 85, 0.4);
+  --border-radius: 12px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-top: 12px;
+  --inner-padding-bottom: 12px;
+  margin-bottom: 15px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Estilo para los textos de los retos */
+ion-label p {
+  color: #ffffff;
+  margin: 5px 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Botón Aceptar con estilo consistente */
+ion-button {
+  --background: rgba(52, 152, 219, 0.8);
+  --background-hover: rgba(41, 128, 185, 0.9);
+  --background-activated: rgba(41, 128, 185, 0.9);
+  --border-radius: 8px;
+  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+ion-button:hover {
+  transform: translateY(-2px);
+  --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Mensaje cuando no hay retos */
+ion-item:first-child ion-label {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Spinner de carga */
+ion-spinner {
+  display: block;
+  margin: 50px auto;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+}
+
+/* Toast notifications */
+ion-toast {
+  --border-radius: 8px;
+  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  --color: #ffffff;
+  --background: rgba(44, 62, 80, 0.9);
+}
+
+/* Botón de regreso mejorado */
+.back-button {
+  --color: #ffffff;
+  --border-color: #ffffff;
+  --background: transparent;
+  --background-hover: rgba(255, 255, 255, 0.1);
+  --background-activated: rgba(255, 255, 255, 0.2);
+  margin-top: 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  --color: #ffffff;
+  --border-color: #ffffff;
+  --background-hover: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+.back-button ion-icon {
+  color: inherit;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 480px) {
+  .retos-container {
+    margin: 10px;
+    padding: 1rem;
+  }
+  
+  ion-item {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}

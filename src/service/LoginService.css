@@ -1,32 +1,126 @@
+/* Contenedor principal con fondo natural */
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 20px;
-  }
-  
-  .login-form {
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .main-button {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 30px;
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .main-button:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 20px;
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Tarjeta de formulario con estilo orgánico */
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: rgba(242, 183, 87, 0.658);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para los items de Ionic */
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: transparent;
+  margin-bottom: 15px;
+}
+
+/* Estilos para las etiquetas flotantes */
+ion-label {
+  color: #5a6a7e !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  transition: all 0.3s ease;
+}
+
+ion-label.floating {
+  transform: translateY(20px) scale(1);
+}
+
+ion-label.floating[position="floating"] {
+  transform: translateY(0) scale(0.75);
+}
+
+/* Estilos para los inputs */
+.input-email, .input-password {
+  width: 100%;
+  padding: 12px 0 !important;
+  border: none !important;
+  border-bottom: 1px solid #dfe6f0 !important;
+  font-size: 15px !important;
+  color: #2c3e50 !important;
+  background-color: transparent !important;
+  transition: all 0.3s ease;
+}
+
+.input-email:focus, .input-password:focus {
+  border-bottom-color: #3498db !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Estilos cuando el input tiene contenido */
+.input-email:not(:placeholder-shown),
+.input-password:not(:placeholder-shown) {
+  border-bottom-color: #3498db !important;
+}
+
+/* Contenedor de iconos (si los usas) */
+.input-icon {
+  color: #7f8c8d;
+  margin-right: 10px;
+}
+
+/* Botón principal */
+.main-button {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.main-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+}
+
+/* Botón secundario */
+.secondary-button {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #3498db;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.secondary-button:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Mensajes de error (puedes agregarlos si necesitas validación) */
+.error-message {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 5px;
+}
