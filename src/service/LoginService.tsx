@@ -18,7 +18,6 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { Capacitor } from "@capacitor/core";
 import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import "./LoginService.css";
-// ... (importaciones sin cambios)
 
 const vapidKey =
   "BAffDkGrxLFl2QWIWxfnh4MaTZmqnYgmrM-ddelh37V_dkLlyfmExc6e5yzL252bUHTsuqSLSNSRsMAwyTIRL_s";
@@ -35,12 +34,14 @@ const LoginService: React.FC = () => {
       let token: string | undefined;
 
       if (Capacitor.isNativePlatform()) {
+        // Para app móvil con Capacitor
         const permissionResult = await FirebaseMessaging.requestPermissions();
         if (permissionResult.receive === "granted") {
           const tokenResult = await FirebaseMessaging.getToken();
           token = tokenResult.token;
         }
       } else {
+        // Para web
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
           token = await getWebToken(messaging, { vapidKey });
@@ -50,6 +51,7 @@ const LoginService: React.FC = () => {
       const db = getFirestore();
       const userDocRef = doc(db, "usuarios", uid);
 
+      // Datos para actualizar
       const userData: any = {
         correo: email,
         fechaRegistro: new Date().toISOString(),
@@ -57,6 +59,9 @@ const LoginService: React.FC = () => {
 
       if (token) {
         userData.tokenDispositivo = token;
+        console.log("Token obtenido:", token);
+      } else {
+        console.warn("No se obtuvo token de notificaciones");
       }
 
       await setDoc(userDocRef, userData, { merge: true });
@@ -89,7 +94,6 @@ const LoginService: React.FC = () => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("UID:", userCredential.user.uid);
       await guardarTokenDispositivo(userCredential.user.uid, email);
       history.replace("/");
     } catch (e: any) {

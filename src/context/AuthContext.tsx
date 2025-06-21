@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
-import Notification from "../service/notificationService"; // ✅ CORREGIDO
+import Notification from "../service/notificationService"; 
 
 const AuthContext = createContext<any>(null);
 

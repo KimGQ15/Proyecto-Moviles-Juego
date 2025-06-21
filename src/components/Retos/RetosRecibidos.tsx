@@ -14,7 +14,6 @@ import { useAuth } from "../../context/AuthContext";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { enviarNotificacionPush } from "../../service/notification";
 import { useHistory } from "react-router-dom";
-
 const RetosRecibidos: React.FC = () => {
   const { user } = useAuth();
   const [retos, setRetos] = useState<any[]>([]);
@@ -40,7 +39,7 @@ const RetosRecibidos: React.FC = () => {
     fetchRetos();
   }, [user]);
 
- const history = useHistory(); // debe ir dentro del componente
+ const history = useHistory();
 
 const handleAceptar = async (retoId: string) => {
   const reto = retos.find((r) => r.id === retoId);
@@ -50,7 +49,7 @@ const handleAceptar = async (retoId: string) => {
     return;
   }
 
-  history.push("/jugar", { retoId }); // ✅ Redirige al juego con el ID
+  history.push("/jugar", { retoId }); 
 }
 
   return (

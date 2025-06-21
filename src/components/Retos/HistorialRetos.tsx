@@ -11,7 +11,6 @@ import {
 import { useHistory } from "react-router-dom";
 import { obtenerHistorial } from "../../service/retoService";
 import { useAuth } from "../../context/AuthContext";
-
 const HistorialRetos: React.FC = () => {
   const { user } = useAuth();
   const [historial, setHistorial] = useState<any[]>([]);

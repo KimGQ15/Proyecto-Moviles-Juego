@@ -14,24 +14,17 @@ import { crearReto } from "../../service/retoService";
 import { useAuth } from "../../context/AuthContext";
 import { getFirestore, collection, getDocs, getDoc, doc } from "firebase/firestore";
 import { enviarNotificacionPush } from "../../service/notification";
-
-interface Props {
-  location: {
-    state: {
-      puntaje: number;
-    };
-  };
-}
+import { useLocation } from "react-router-dom";
 
 interface Usuario {
   uid: string;
-  nombre: string;
-  correo?: string;
+  correo: string;
 }
 
-const EnviarReto: React.FC<Props> = ({ location }) => {
+const EnviarReto: React.FC = () => {
   const { user } = useAuth();
-  const puntajeActual = location?.state?.puntaje ?? 0;
+  const location = useLocation<{ puntaje: number }>();
+  const puntajeActual = location.state?.puntaje ?? 0;
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [receptorUid, setReceptorUid] = useState("");
@@ -40,19 +33,19 @@ const EnviarReto: React.FC<Props> = ({ location }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user) return;
+
     const fetchUsuarios = async () => {
       try {
         const db = getFirestore();
         const usuariosSnapshot = await getDocs(collection(db, "usuarios"));
         const lista: Usuario[] = [];
-
         usuariosSnapshot.forEach((doc) => {
           const data = doc.data();
-          if (doc.id !== user?.uid) {
+          if (doc.id !== user.uid && data.correo) {
             lista.push({
               uid: doc.id,
-              nombre: data.nombre || "Sin nombre",
-              correo: data.correo || "",
+              correo: data.correo,
             });
           }
         });
@@ -77,7 +70,6 @@ const EnviarReto: React.FC<Props> = ({ location }) => {
       setShowToast(true);
       setReceptorUid("");
 
-      // Enviar notificación al receptor
       const db = getFirestore();
       const receptorDocRef = doc(db, "usuarios", receptorUid);
       const receptorDoc = await getDoc(receptorDocRef);
@@ -127,7 +119,7 @@ const EnviarReto: React.FC<Props> = ({ location }) => {
               >
                 {usuarios.map((u) => (
                   <IonSelectOption key={u.uid} value={u.uid}>
-                    {u.nombre} ({u.correo})
+                    {u.correo || u.uid}
                   </IonSelectOption>
                 ))}
               </IonSelect>

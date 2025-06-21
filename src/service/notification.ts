@@ -10,7 +10,7 @@ export const enviarNotificacionPush = async ({
   data?: Record<string, string>;
 }) => {
   try {
-    const response = await fetch("http://192.168.0.127:3000/api/send-notification", {
+    const response = await fetch("http://192.168.0.8:3000/api/send-notification", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,6 +21,6 @@ export const enviarNotificacionPush = async ({
     const result = await response.json();
     if (!result.success) throw new Error(result.message);
   } catch (error) {
-    console.error("Error al enviar notificación push:", error);
+    console.error("❌ Error al enviar notificación push:", error);
   }
 };
